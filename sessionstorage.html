@@ -1,61 +1,6 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>sessionStorage</title>
-	<meta charse="UTF-8">
-	<script type="text/javascript" src="zepto.min.js"></script>
-	<script type="text/javascript">
-		function muestra()
-		{
-			var mn1 = sessionStorage.getItem("nombre");
-			var mn2 = sessionStorage["nombre2"];
-			var mn3 = sessionStorage["nombre3"];
-			alert(mn1+" "+mn2+" "+mn3);
-		};
-		function guarda()
-		{
-				sessionStorage.setItem("nombre","Arturo");
-				sessionStorage.nombre2="Reyna";
-				sessionStorage.nombre3="Fernando";
-		};	
-		function borrar(){
-			//sessionStorage.removeItem("nombre");
-			//sessionStorage.removeItem("nombre2");
-			sessionStorage.clear();
-		};
-		function nelementos(){
-			var num = sessionStorage.length;
-			alert(num);
-		};
-		function keyelemento(){
-			var c1 = sessionStorage.key(0);
-			var c2 = sessionStorage.key(1);
-			var c3 = sessionStorage.key(2);
-			alert(c1+" "+c2+" "+c3);
-		};
-		function todos(){
-			num=sessionStorage.length; //número de datos guardados
-			info=document.getElementById("lista"); //elemento donde sacar los datos en pantalla
-			info.innerHTML="<ul>"; //principio de lista
-			for (i=0;i<num;i++) { //bucle para recorrer todos los datos
-			   clave=sessionStorage.key(i); //obtener la clave del dato
-			   valor=sessionStorage.getItem(clave); //obtener el valor del dato
-			   info.innerHTML+="<li>"+clave+" : "+valor+"</li>"; //sacar dato en pantalla
-			   }
-			info.innerHTML+="</ul>"; //Fin de la lista
-			return 0;
-		};
-	</script>
-</head>
-  <body> 
-	<h2>sessionStorage</h2>	
-	<p>	
-	<div id="lista"></div>
-	<button type="button" id="inicializa1" onclick="guarda()">Guardar</button>
-	<button type="button" id="inicializa2" onclick="muestra()">Mostrar</button>
-	<button type="button" id="inicializa3" onclick="borrar()">Borrar</button>
-	<button type="button" id="inicializa4" onclick="nelementos()">No. Elementos</button>
-	<button type="button" id="inicializa5" onclick="keyelemento()">Key</button>
-	<button type="button" id="inicializa6" onclick="todos()">Todos</button>
+	
   </body>
 </html>
