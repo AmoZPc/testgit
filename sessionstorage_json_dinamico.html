@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Iframes</title>
+	<meta charse="UTF-8">
+	<script type="text/javascript" src="zepto.min.js"></script>
+	<script type="text/javascript">
+
+		$(function () {
+			$("#boton").on('click', function () {
+
+				if (validatename(document.getElementById("nombre").value) == false) {
+
+					document.getElementById("nombre").style.backgroundColor = "red";
+
+				} else {
+					document.getElementById("nombre").style.backgroundColor = "white";
+
+					var n = document.forms.f.nombre.value;
+					var ed = document.forms.f.edad.value;
+					var es = document.forms.f.estatura.value * 100;
+					var pe = document.forms.f.peso.value;
+					var fecha = new Date();
+					//alert(pe+' '+es)
+
+					var imc = (Math.round(pe * 1000000 / (es * es))) / 100;
+					reg1 = sessionStorage.getItem('d');
+					//alert(imc);
+
+					var dig;
+					if (imc <= 19) {
+
+						dig = '"Falta_de_peso"';
+
+					} else if (imc > 19 && imc <= 25) {
+
+						dig = '"Peso_adecuado"';
+					} else if (imc > 25 && imc <= 30) {
+
+						dig = '"Sobrepeso_Se_recomiendo_que_haga_una_dieta"';
+					} else if (imc > 30 && imc <= 40) {
+
+						dig = '"Obesidad_Riesgo_para_la_salud"';
+					} else if (imc > 40) {
+
+						dig = '"Obesidad_severa"';
+					}
+					//	alert (dig);
+
+
+					if (reg1 == null) {
+						var c = '{"nombre":"' + n + '","edad":' + ed + ',"es":' + es + ',"pe":' + pe + ',"imc":' + imc + ',"dig":' + dig + '}';
+						sessionStorage.setItem('d', '{"Personas":[' + c + ']}');
+						mostrar();
+					}
+					else {
+						//sessionStorage.length
+						var reg3 = sessionStorage.getItem('d');
+						var reg4 = JSON.parse(reg3);
+						reg4.Personas.push({ "nombre": n, "edad": ed, "es": es, "pe": pe, "imc": imc, "dig": dig });
+						var reg5 = JSON.stringify(reg4);
+						sessionStorage.removeItem('d');
+						sessionStorage.setItem('d', reg5);
+						mostrar();
+					}
+				}
+			});
+		});
+
+		function validatename(names) {
+			if (!(/^[a-zA-Z]{4,}$/.test(names))) {
+				alert("Error en Campo \"Nombre\"\r\nIngrese minimo 4 caracteres. Solo se permite letras.");
+
+				return false;
+			}
+		};
+
+
+		function eliminar(d) {
+			var reg3 = sessionStorage.getItem('d');
+			reg4 = JSON.parse(reg3);
+			reg4.Personas.splice(d, 1);
+			reg5 = JSON.stringify(reg4, "\t");
+			sessionStorage.removeItem('d');
+			sessionStorage.setItem('d', reg5);
+			cargarDatos();
+			return 0;
+		};
+		function inicializar() {
+			sessionStorage.clear();
+			c = "";
+			b = 0;
+			//document.getElementById('iframes').innerHTML = "";
+			var reg1 = localStorage.getItem('d');
+			//alert(reg1);
+			if (reg1 == null) {
+				alert("Datos eliminados del localstorage");
+			} else {
+				document.getElementById("Table").innerHTML = "";
+			}
+
+			return 0;
+		};
+
+		function mostrar() {
+			var i, iframes = "";
+			var reg1 = sessionStorage.getItem('d');
+			//alert(reg1);
+			if (reg1 == null) { alert("No existen datos en localstorage"); return 0; } else {
+				reg = JSON.parse(reg1);
+				for (x = 0; x < reg.Personas.length; x++) {
+					//alert(reg.Personas[x].nombre);
+					//localStorage.removeItem("n2");
+					iframes += "<tr><td>" + reg.Personas[x].nombre + "</td><td>" + reg.Personas[x].edad + "</td><td><input type=button value=Eliminar id=x name=" + x + " onclick='eliminar(this.name)'/></td></tr>";
+				}
+				$('#iframes').html(iframes);
+			}
+		};
+
+		function cargarDatos() {
+			var reg1 = sessionStorage.getItem('d');
+			
+
+			if (reg1.length > 15) {
+				document.getElementById("Table").innerHTML = "";
+			}
+
+			if (reg1 == null) {
+				alert("No existen datos en localstorage"); return 0;
+			} else {
+
+				var DatosJson = JSON.parse(reg1);
+				$("#Table").append('<tr><td>Nombre</td>' +
+					'<td>Edad</td>' +
+					'<td>Estatura</td>' +
+					'<td>Peso</td>' +
+					'<td>IMC</td>' +
+					'<td>Diagnostico</td>' +
+					'<td>Eliminar</td>');
+				for (i = 0; i < DatosJson.Personas.length; i++) {
+
+
+					$("#Table").append('<tr>' +
+						'<td align="center" style="dislay: none;">' + DatosJson.Personas[i].nombre + '</td>' +
+						'<td align="center" style="dislay: none;">' + DatosJson.Personas[i].edad + '</td>' +
+						'<td align="center" style="dislay: none;">' + DatosJson.Personas[i].es + '</td>' +
+						'<td align="center" style="dislay: none;">' + DatosJson.Personas[i].pe + '</td>' +
+						'<td align="center" style="dislay: none;">' + DatosJson.Personas[i].imc + '</td>' +
+						'<td align="center" style="dislay: none;">' + DatosJson.Personas[i].dig + '</td>' +
+						'<td align="center" style="dislay: none;"> <input type=button value=Eliminar id=x name='
+						+ i + ' onclick="eliminar(this.name);"/>' +
+						'</tr>');
+					//	
+				}
+			}
+
+
+		}
+
+
+
+	</script>
+</head>
+
+<body>
+	<h2>Calulo de IMC</h2>
+	<form action="/contacto/enviar" method="post" name="f">
+		<div class="generic-form">
+			<div class="element_form">
+				<label class="label_title"> Nombre:</label><input type="text" id="nombre" name="nombre"
+					placeholder="Nombre" pattern="[A-Za-z]{2,10}" autofocus required></div>
+			<div class="element_form">
+				<label class="label_title"> Edad:</label> <input type="number" id="edad" value=18 min="1" max="80">
+			</div>
+			<div class="element_form">
+				<label class="label_title"> Estatura:</label> <input type="number" id="estatura" value="1" min="1"
+					max="3"></div>
+		</div>
+		<div class="element_form">
+			<label class="label_title"> Peso:</label> <input type="number" id="peso" value=18 min="3" max="100"></div>
+		</div>
+		<button type="button" id="boton">Anadir</button>
+		<button type="button" id="inicializa" onclick="inicializar()">Inicializar</button>
+		<button type="button" id="inicializa2" onclick="cargarDatos()">mostrar</button>
+	</form>
+
+	<div id="resultados">
+		<ul id="ulElegido">
+			<table id="Table"></table>
+		</ul>
+	</div>
+
+</body>
+
+
+</html>
